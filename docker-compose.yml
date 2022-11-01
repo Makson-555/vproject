@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  web:
+    build: ./web
+    command: gunicorn vproject.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/vproject
+    expose:
+      - 8000
+    networks:
+      - app
+
+  nginx:
+    build: ./web/nginx
+    volumes:
+      - .:/vproject
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
